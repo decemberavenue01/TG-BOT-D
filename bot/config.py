@@ -1,13 +1,14 @@
 from dataclasses import dataclass
 from dotenv import load_dotenv
 import os
+from typing import List
 
 load_dotenv()
 
 @dataclass
 class Config:
     bot_token: str
-    admins: list[int]
+    admins: List[int]
     auto_approve: bool
 
 def load_config() -> Config:
