@@ -12,6 +12,7 @@ from aiogram.fsm.state import StatesGroup, State
 from bot.config import load_config
 from bot.database import db
 import logging
+from typing import List
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -238,7 +239,7 @@ async def cancel_broadcast(message: Message, state: FSMContext):
     await message.answer("🚫 Рассылка отменена.")
 
 
-async def get_all_users() -> list[int]:
+async def get_all_users() -> List[int]:
     users = []
     rows = await db.get_all_users()  # Метод должен возвращать список строк с user_id
     for row in rows:
