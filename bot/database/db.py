@@ -1,6 +1,7 @@
 import aiosqlite
 from pathlib import Path
 import os
+from typing import Optional, List, Tuple, Union
 
 DB_PATH = Path("bot_database.sqlite3")
 
@@ -52,7 +53,7 @@ class Database:
             await self.db.close()
 
     # Настройки
-    async def get_setting(self, key: str) -> str | None:
+    async def get_setting(self, key: str) -> Optional[str]:
         async with self.db.execute("SELECT value FROM settings WHERE key = ?", (key,)) as cursor:
             row = await cursor.fetchone()
             return row[0] if row else None
@@ -72,7 +73,7 @@ class Database:
         await self.db.commit()
 
     # Заявки
-    async def add_request(self, user_id: int, username: str | None, full_name: str | None, chat_id: int, chat_title: str) -> int:
+    async def add_request(self, user_id: int, username: Optional[str], full_name: Optional[str], chat_id: int, chat_title: str) -> int:
         cursor = await self.db.execute("""
             INSERT INTO join_requests (user_id, username, full_name, chat_id, chat_title)
             VALUES (?, ?, ?, ?, ?)
@@ -80,11 +81,11 @@ class Database:
         await self.db.commit()
         return cursor.lastrowid
 
-    async def get_request_by_id(self, request_id: int) -> tuple | None:
+    async def get_request_by_id(self, request_id: int) -> Optional[Tuple]:
         async with self.db.execute("SELECT * FROM join_requests WHERE id = ?", (request_id,)) as cursor:
             return await cursor.fetchone()
 
-    async def get_pending_requests(self) -> list[tuple]:
+    async def get_pending_requests(self) -> List[Tuple]:
         async with self.db.execute("SELECT * FROM join_requests WHERE status = 'pending'") as cursor:
             return await cursor.fetchall()
 
@@ -109,7 +110,7 @@ class Database:
         """, (user_id, chat_id))
         await self.db.commit()
 
-    async def get_all_users(self) -> list[tuple]:
+    async def get_all_users(self) -> List[Tuple]:
         async with aiosqlite.connect(self.db_path) as db:
             async with db.execute("SELECT user_id FROM users WHERE is_subscribed = 1") as cursor:
                 return await cursor.fetchall()
