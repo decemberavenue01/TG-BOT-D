@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS join_requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    username TEXT,
+    full_name TEXT,
+    chat_id INTEGER NOT NULL,
+    chat_title TEXT,
+    request_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status TEXT DEFAULT 'pending',
+    approved_by INTEGER
+);
